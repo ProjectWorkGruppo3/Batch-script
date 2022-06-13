@@ -8,7 +8,7 @@ class TimestreamReader:
         self.client = session.client('timestream-query')
 
     
-    def get_timestream_data_in_csv(self):
+    def get_timestream_data(self):
         """Get Data From Timestream"""
 
         raw_rows, raw_columns = self.__request_data()
@@ -20,9 +20,9 @@ class TimestreamReader:
         
         data_with_json_property = self.__get_data_with_json_property(data_mapped_by_time)
 
-        csv_columns, csv_data = self.__convert_to_csv_data_type(data_with_json_property)
+        dictionary = self.__convert_to_json_data_type(data_with_json_property)
 
-        return csv_columns, csv_data
+        return dictionary
 
 
     def __request_data(self):
@@ -97,25 +97,17 @@ class TimestreamReader:
         
         return mapped
 
-    def __convert_to_csv_data_type(self, data):
-        csv = []
-        csv_columns = ['time', 'uid']
-        cc = []
-
+    def __convert_to_json_data_type(self, data):
+        json_list = []
         for d in data:
-            csv_row = [d['time'], d['uid']]
-            bracelet_data = d['data']
-            keys = []
+            obj = {
+                'time': d['time'],
+                'device_id': d['uid']
+            }
+            for k, v in d['data'].items():
+                obj[k] = v
 
-            for k, v in bracelet_data.items():
-                csv_row.append(v)
-                keys.append(k)
-                
-            cc = list(set(cc) | set(keys))
-
-            
-            csv.append(csv_row)
-
-        # FIXME fix union, order of the columns its different respect of the data
+            json_list.append(obj)
         
-        return csv_columns+cc, csv
+        return json_list
+            

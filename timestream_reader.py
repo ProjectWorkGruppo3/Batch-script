@@ -2,10 +2,15 @@ import boto3
 import json
 
 class TimestreamReader:
-    def __init__(self):
-        """Init with aws keys""" # FIXME
+    def __init__(self, access_key, secret_key, database, table):
+        self.database = database
+        self.table = table
         session = boto3.Session()
-        self.client = session.client('timestream-query')
+        self.client = session.client(
+            'timestream-query',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key
+        )
 
     
     def get_timestream_data(self):
@@ -28,7 +33,7 @@ class TimestreamReader:
     def __request_data(self):
         """Request to timestream"""
         result = self.client.query(
-            QueryString='SELECT * FROM "clod2021_ProjectWork_G3"."bracelet_data"'
+            QueryString=f'SELECT * FROM "{self.database}"."{self.table}"'
         )
 
         raw_rows = result['Rows']

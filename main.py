@@ -56,24 +56,29 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(data)
 
-    print(df.head())
+    # print(df.head(20))
 
-    # Number of data ingested today - number
+    # ANCHOR Number of data ingested today - number
     data_ingested_today = len(df)
     print(f'Data ingested today: {data_ingested_today}')
     
 
-    # - Avarage Total Number of Falls - number
+    # ANCHOR - Avarage Total Number of Falls - number
     avg_n_falls = df["nFall"].mean()
     print(f'Avarage N. Falls {avg_n_falls}') 
 
-    # - Total Bracelets - number
+    # ANCHOR - Total Bracelets - number
     n_devices = len(df.groupby('device_id').size().reset_index(name='total')['device_id'])
     print(n_devices)
 
     
-
-    # - Scatter Chart / Google Map Density  Location of the bracelets TODO when put the position
+    # ANCHOR New devices today TODO
+    
+    # ANCHOR Avarage serendipity
+    avg_serendipity = df['serendipity'].mean()
+    print(f"Avarage serendipity: {avg_serendipity}")
+    
+    # - Scatter Chart / Google Map Density  Location of the bracelets 
     # type of data to return array of this object
     # {
     #     city: string,
@@ -84,14 +89,10 @@ if __name__ == '__main__':
     #     totalDevices: number;   
     # }
 
-    
-    # New devices today TODO
-    
-    # Avarage serendipity TODO
-    avg_serendipity = df['serendipity'].mean()
-    print(f"Avarage serendipity: {avg_serendipity}")
-    
-    
+    # grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+    # converted_to_json = []
+    # grouped_by_coords.apply(lambda x: converted_to_json.append(json.loads(x.to_json())), axis=1)
+    # print(json.dumps(converted_to_json))
 
 
 

@@ -107,7 +107,7 @@ class TimestreamReader:
         for d in data:
             obj = {
                 'time': d['time'],
-                'device_id': d['uid']
+                'device_id': d['uuid']
             }
             for k, v in d['data'].items():
                 obj[k] = v

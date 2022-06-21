@@ -42,21 +42,22 @@ if __name__ == '__main__':
     data = tr.get_timestream_data()
 
     df = pd.DataFrame(data)
-    list_conv = []
-    df.apply(lambda x: list_conv.append(json.loads(x.to_json())), axis=1)
+    
+    # list_conv = []
+    # df.apply(lambda x: list_conv.append(json.loads(x.to_json())), axis=1)
 
-    rds = RdsWriter(
-        db=config['rds']['db'],
-        endpoint=config['rds']['endpoint'],
-        port=config['rds']['port'],
-        user=config['rds']['user'],
-        password=config['rds']['password'],
-    )
+    # rds = RdsWriter(
+    #     db=config['rds']['db'],
+    #     endpoint=config['rds']['endpoint'],
+    #     port=config['rds']['port'],
+    #     user=config['rds']['user'],
+    #     password=config['rds']['password'],
+    # )
 
-    rds.write_elaborated_data(
-        table=config['rds']['elaboration_table'],
-        data=list_conv
-    )
+    # rds.write_elaborated_data(
+    #     table=config['rds']['elaboration_table'],
+    #     data=list_conv
+    # )
 
     
 

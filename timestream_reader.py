@@ -12,7 +12,8 @@ class TimestreamReader:
             aws_secret_access_key=secret_key
         )
 
-    
+
+    # FIXME get lasta day data
     def get_timestream_data(self):
         """Get Data From Timestream"""
 

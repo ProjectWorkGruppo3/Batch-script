@@ -29,18 +29,13 @@ def get_envs():
         }
     }
 
-def write_to_db(config, data):
-    rds = RdsWriter(
+def get_rds_client(config):
+    return RdsWriter(
         db=config['rds']['db'],
         endpoint=config['rds']['endpoint'],
         port=config['rds']['port'],
         user=config['rds']['user'],
         password=config['rds']['password'],
-    )
-
-    rds.write_elaborated_data(
-        table=config['rds']['elaboration_table'],
-        data=data
     )
 
 if __name__ == '__main__':
@@ -58,52 +53,26 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(data)
 
-    # print(df.head(20))
-
-    # ANCHOR Number of data ingested today - number
     data_ingested_today = len(df)
-    print(f'Data ingested today: {data_ingested_today}')
+    falls = 0
+    avg_serendipity = 0
+    location_density = []
+
+    if data_ingested_today == 0:
+        falls = int(df["nFall"].sum().item())
+        avg_serendipity = int(df['serendipity'].mean().item())
+        grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+        grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
     
+    rds_client = get_rds_client(config)
 
-    # ANCHOR - Avarage Total Number of Falls - number
-    avg_n_falls = df["nFall"].mean()
-    print(f'Avarage N. Falls {avg_n_falls}') 
-
-    # ANCHOR - Total Bracelets - number
-    n_devices = len(df.groupby('device_id').size().reset_index(name='total')['device_id'])
-    print(n_devices)
-
-    
-    # ANCHOR New devices today TODO
-    
-    # ANCHOR Avarage serendipity
-    avg_serendipity = df['serendipity'].mean()
-    print(f"Avarage serendipity: {avg_serendipity}")
-    
-    # - Scatter Chart / Google Map Density  Location of the bracelets 
-    # type of data to return array of this object
-    # {
-    #     city: string,
-    #     coordinates: {
-    #         latitude: number,
-    #         longitude: number,
-    #     },
-    #     totalDevices: number;   
-    # }
-
-    grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
-    converted_to_json = []
-    grouped_by_coords.apply(lambda x: converted_to_json.append(json.loads(x.to_json())), axis=1)
-    print(json.dumps(converted_to_json))
-
-
-
-    # ANCHOR
-    # list_conv = []
-    # df.apply(lambda x: list_conv.append(json.loads(x.to_json())), axis=1)
-
-
-    # write_to_db(config, list_conv)
+    rds_client.write_elaborated_data(
+        config['rds']['elaboration_table'],
+        data_ingested_today,
+        falls,
+        avg_serendipity,
+        location_density
+    )
 
     
     

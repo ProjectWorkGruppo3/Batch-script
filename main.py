@@ -1,10 +1,12 @@
 import json
-from dotenv import load_dotenv
 import os
-from timestream_reader import TimestreamReader
+
 import pandas as pd
+from dotenv import load_dotenv
 
 from rds_writer import RdsWriter
+from timestream_reader import TimestreamReader
+
 
 def get_envs():
     load_dotenv()
@@ -89,10 +91,10 @@ if __name__ == '__main__':
     #     totalDevices: number;   
     # }
 
-    # grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
-    # converted_to_json = []
-    # grouped_by_coords.apply(lambda x: converted_to_json.append(json.loads(x.to_json())), axis=1)
-    # print(json.dumps(converted_to_json))
+    grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+    converted_to_json = []
+    grouped_by_coords.apply(lambda x: converted_to_json.append(json.loads(x.to_json())), axis=1)
+    print(json.dumps(converted_to_json))
 
 
 

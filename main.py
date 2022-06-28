@@ -73,24 +73,5 @@ if __name__ == '__main__':
         avg_serendipity,
         location_density
     )
-
-    
-    
-    # list_conv = []
-    # df.apply(lambda x: list_conv.append(json.loads(x.to_json())), axis=1)
-
-    # rds = RdsWriter(
-    #     db=config['rds']['db'],
-    #     endpoint=config['rds']['endpoint'],
-    #     port=config['rds']['port'],
-    #     user=config['rds']['user'],
-    #     password=config['rds']['password'],
-    # )
-
-    # rds.write_elaborated_data(
-    #     table=config['rds']['elaboration_table'],
-    #     data=list_conv
-    # )
-
     
 

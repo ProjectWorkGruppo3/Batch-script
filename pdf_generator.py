@@ -1,3 +1,4 @@
+import os
 from re import template
 
 import jinja2
@@ -23,6 +24,9 @@ class PdfGenerator:
 
         if err != 0:
             raise Exception(f'Failed to generate report')
+    
+    def delete_report(self):
+        os.remove(self.output_file_name)
 
 
     def __get_html(self, data):

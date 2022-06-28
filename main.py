@@ -1,5 +1,7 @@
+import datetime
 import json
 import os
+from re import M
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -27,7 +29,8 @@ def get_envs():
             'user': os.environ['AWS_RDS_USER'],
             'password': os.environ['AWS_RDS_PASSWORD'],
             'elaboration_table': os.environ['AWS_RDS_ELABORATION_TABLE'],
-        }
+        },
+        'outputFile': os.environ['OUTPUT_FILE']
     }
 
 def get_rds_client(config):
@@ -41,44 +44,50 @@ def get_rds_client(config):
 
 if __name__ == '__main__':
 
-    # config = get_envs()
+    config = get_envs()
 
-    # tr = TimestreamReader(
-    #     access_key=config['aws_access_key'],
-    #     secret_key=config['aws_secret_key'],
-    #     database=config['timestream']['db'],
-    #     table=config['timestream']['table'],
-    # )
+    tr = TimestreamReader(
+        access_key=config['aws_access_key'],
+        secret_key=config['aws_secret_key'],
+        database=config['timestream']['db'],
+        table=config['timestream']['table'],
+    )
 
-    # data = tr.get_timestream_data()
+    data = tr.get_timestream_data()
 
-    # df = pd.DataFrame(data)
+    df = pd.DataFrame(data)
 
-    # data_ingested_today = len(df)
-    # falls = 0
-    # avg_serendipity = 0
-    # location_density = []
+    data_ingested_today = len(df)
+    falls = 0
+    avg_serendipity = 0
+    location_density = []
 
-    # if data_ingested_today == 0:
-    #     falls = int(df["nFall"].sum().item())
-    #     avg_serendipity = int(df['serendipity'].mean().item())
-    #     grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
-    #     grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
+    if data_ingested_today == 0:
+        falls = int(df["nFall"].sum().item())
+        avg_serendipity = int(df['serendipity'].mean().item())
+        grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+        grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
     
-    # rds_client = get_rds_client(config)
+    rds_client = get_rds_client(config)
 
-    # rds_client.write_elaborated_data(
-    #     config['rds']['elaboration_table'],
-    #     data_ingested_today,
-    #     falls,
-    #     avg_serendipity,
-    #     location_density
-    # )
+    rds_client.write_elaborated_data(
+        config['rds']['elaboration_table'],
+        data_ingested_today,
+        falls,
+        avg_serendipity,
+        location_density
+    )
 
 
-    pg = PdfGenerator()
+    pg = PdfGenerator(config['outputFile'])
 
-    pg.generate_report_pdf(dict())
+    pg.generate_report_pdf({
+        'id': datetime.date.today(),
+        'generated_at': datetime.date.today(),
+        'data_ingested': data_ingested_today,
+        'falls': falls,
+        'serendipity': avg_serendipity
+    })
 
     
     

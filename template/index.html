@@ -147,10 +147,7 @@
 
 <body>
   <header class="clearfix">
-    <div id="logo">
-      <!-- <img src="logo.png"> -->
-    </div>
-    <h1>Report {{ id }}</h1>
+    <h1>Report {{ json_data.id }}</h1>
     <div id="company" class="clearfix">
       <div>Seren Up</div>
       <div>Via Prasecco, 3a <br /> 33170 Pordenone, IT</div>
@@ -159,15 +156,27 @@
 
     </div>
     <div id="project">
-      <div><span>GENERATED</span> {{ generated_at }}</div>
+      <div><span>GENERATED</span> {{ json_data.generated_at }}</div>
     </div>
   </header>
   <main>
-    { cards.analysis }
+    <div>
+      <div id="project">
+        <div><span>DATA INGESTED</span> {{ json_data.data_ingested }}</div>
+      </div>
+    </div>
+    <div>
+      <div id="project">
+        <div><span>SERENDIPITY</span> {{ json_data.serendipity }}%</div>
+      </div>
+    </div>
+    <div>
+      <div id="project">
+        <div><span>TOTAL FALLS</span> {{ json_data.falls }}</div>
+      </div>
+    </div>
 
-    { image.chart.serendipity }
 
-    { image.chart.falls }
 
   </main>
   <footer>

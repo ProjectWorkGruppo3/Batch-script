@@ -6,13 +6,13 @@ from xhtml2pdf import pisa
 
 class PdfGenerator:
 
-    def __init__(self) -> None:
+    def __init__(self, output) -> None:
         
         templateLoader = jinja2.FileSystemLoader(searchpath="./template")
         templateEnv = jinja2.Environment(loader=templateLoader)
         TEMPLATE_FILE = "index.html"
         self.template = templateEnv.get_template(TEMPLATE_FILE)
-        self.output_file_name = "render.pdf"
+        self.output_file_name = output
 
     # FIXME what to include in data?
     def generate_report_pdf(self, data):

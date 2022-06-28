@@ -2,12 +2,18 @@ import boto3
 import json
 
 class TimestreamReader:
-    def __init__(self):
-        """Init with aws keys""" # FIXME
+    def __init__(self, access_key, secret_key, database, table):
+        self.database = database
+        self.table = table
         session = boto3.Session()
-        self.client = session.client('timestream-query')
+        self.client = session.client(
+            'timestream-query',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key
+        )
 
-    
+
+    # FIXME get lasta day data
     def get_timestream_data(self):
         """Get Data From Timestream"""
 
@@ -28,7 +34,7 @@ class TimestreamReader:
     def __request_data(self):
         """Request to timestream"""
         result = self.client.query(
-            QueryString='SELECT * FROM "clod2021_ProjectWork_G3"."bracelet_data"'
+            QueryString=f'SELECT * FROM "{self.database}"."{self.table}"  WHERE time between ago(1d) and now()'
         )
 
         raw_rows = result['Rows']
@@ -91,7 +97,7 @@ class TimestreamReader:
             dj = json.loads(td['json'])
 
             for k, v in dj.items():
-                r[k] = v # uid or data
+                r[k] = v # uuid or data
             
             mapped.append(r)
         
@@ -102,7 +108,7 @@ class TimestreamReader:
         for d in data:
             obj = {
                 'time': d['time'],
-                'device_id': d['uid']
+                'device_id': d['uuid']
             }
             for k, v in d['data'].items():
                 obj[k] = v

@@ -12,7 +12,8 @@ class TimestreamReader:
             aws_secret_access_key=secret_key
         )
 
-    
+
+    # FIXME get lasta day data
     def get_timestream_data(self):
         """Get Data From Timestream"""
 
@@ -33,7 +34,7 @@ class TimestreamReader:
     def __request_data(self):
         """Request to timestream"""
         result = self.client.query(
-            QueryString=f'SELECT * FROM "{self.database}"."{self.table}"'
+            QueryString=f'SELECT * FROM "{self.database}"."{self.table}"  WHERE time between ago(1d) and now()'
         )
 
         raw_rows = result['Rows']
@@ -96,7 +97,7 @@ class TimestreamReader:
             dj = json.loads(td['json'])
 
             for k, v in dj.items():
-                r[k] = v # uid or data
+                r[k] = v # uuid or data
             
             mapped.append(r)
         
@@ -107,7 +108,7 @@ class TimestreamReader:
         for d in data:
             obj = {
                 'time': d['time'],
-                'device_id': d['uid']
+                'device_id': d['uuid']
             }
             for k, v in d['data'].items():
                 obj[k] = v

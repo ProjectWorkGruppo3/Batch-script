@@ -53,26 +53,24 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(data)
 
-
     data_ingested_today = len(df)
-    
-    falls = df["nFall"].sum()
-    
-    avg_serendipity = df['serendipity'].mean()
-    
-    grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+    falls = 0
+    avg_serendipity = 0
     location_density = []
-    grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
-    
-    # print(df.head())
-    rds_client = get_rds_client(config)
 
+    if data_ingested_today == 0:
+        falls = int(df["nFall"].sum().item())
+        avg_serendipity = int(df['serendipity'].mean().item())
+        grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
+        grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
+    
+    rds_client = get_rds_client(config)
 
     rds_client.write_elaborated_data(
         config['rds']['elaboration_table'],
         data_ingested_today,
-        falls.item(),
-        int(avg_serendipity.item()),
+        falls,
+        avg_serendipity,
         location_density
     )
 

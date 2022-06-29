@@ -1,3 +1,4 @@
+
 import os
 
 from dotenv import load_dotenv
@@ -31,13 +32,11 @@ def get_envs():
         'outputFile': os.environ['OUTPUT_FILE']
     }
 
-if __name__ == '__main__':
+def lambda_handler(event, context):
     try:
-
         config = get_envs()
-
         Analysis.analyze(config)
-
     except Exception as e:
         print('Script analysis failed. Error:')
         print(e)
+

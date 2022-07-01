@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: latest
+  build:
+    commands:
+      - echo "Build with SAM CLI"
+      - sam build
+  post_build:
+    commands:
+      - echo "Deploy with SAM CLI"
+      - sam deploy

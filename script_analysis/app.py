@@ -1,12 +1,10 @@
-import os
 
-from dotenv import load_dotenv
+import os
 
 from analysis import Analysis
 
 
 def get_envs():
-    load_dotenv()
 
     return {
         'aws_region':  os.environ['AWS_REGION'],
@@ -31,13 +29,16 @@ def get_envs():
         'outputFile': os.environ['OUTPUT_FILE']
     }
 
-if __name__ == '__main__':
+def lambda_handler(event, context):
+    print('Started Analysis Lambda')
     try:
-
+        print('Get Configuration')
+        print(os.environ)
         config = get_envs()
-
+        print(config)
+        print('Start Analyze')
         Analysis.analyze(config)
-
+        print('Finish Analyzing')
     except Exception as e:
         print('Script analysis failed. Error:')
         print(e)

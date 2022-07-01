@@ -49,7 +49,7 @@ class Analysis:
         location_density = []
 
         if data_ingested_today == 0:
-            falls = int(df["nFall"].sum().item())
+            falls = int(df["numberOfFalls"].sum().item())
             avg_serendipity = int(df['serendipity'].mean().item())
             grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
             grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)

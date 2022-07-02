@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "clod2021-projectwork-g3-analysis-script-sam-stack"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-14gtalhsie2q9"
+s3_prefix = "clod2021-projectwork-g3-analysis-script-sam-stack"
+region = "eu-west-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+disable_rollback = true

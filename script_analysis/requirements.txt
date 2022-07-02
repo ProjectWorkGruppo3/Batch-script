@@ -1,0 +1,8 @@
+requests
+boto3
+botocore
+pandas
+Jinja2
+xhtml2pdf
+psycopg2-binary
+python-dotenv

@@ -11,4 +11,4 @@ phases:
   post_build:
     commands:
       - echo "Deploy with SAM CLI"
-      - sam deploy
+      - sam deploy --no-confirm-changeset

@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  clod2021-pw3-script-analysis
+  
+  Project Work Seren Up Script Analysis
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  ScriptAnalysis:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: script_analysis/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 180
+      Environment:
+        Variables:
+          # AWS_REGION: region
+          # AWS_ACCESS_KEY: accesskey
+          # AWS_SECRET_KEY: secretkey
+          AWS_TIMESTREAM_DB: timestreamdb
+          AWS_TIMESTREAM_TABLE: timestreamtable
+          AWS_RDS_ENDPOINT: dbhost
+          AWS_RDS_PORT: dbport
+          AWS_RDS_DB: dbnmae
+          AWS_RDS_USER: dbuser
+          AWS_RDS_PASSWORD: dbpwd
+          AWS_RDS_ELABORATION_TABLE: elaborationtable
+          AWS_S3_BUCKET: s3bucket
+          AWS_S3_FOLDER_REPORT: reports
+          OUTPUT_FILE: report.pdf
+      Architectures:
+        - x86_64
+      Events:
+        TriggerAnalysis:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 1 * * ? *)

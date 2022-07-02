@@ -1,10 +1,8 @@
+
 import datetime
 import json
-import os
-from re import M
 
 import pandas as pd
-from dotenv import load_dotenv
 
 from pdf_generator import PdfGenerator
 from rds_writer import RdsWriter
@@ -12,38 +10,10 @@ from s3_helper import S3Helper
 from timestream_reader import TimestreamReader
 
 
-def get_envs():
-    load_dotenv()
+class Analysis:
 
-    return {
-        'aws_region':  os.environ['AWS_REGION'],
-        'aws_access_key': os.environ['AWS_ACCESS_KEY'],
-        'aws_secret_key': os.environ['AWS_SECRET_KEY'],
-        'timestream': {
-            'db': os.environ['AWS_TIMESTREAM_DB'],
-            'table': os.environ['AWS_TIMESTREAM_TABLE'],
-        },
-        'rds': {
-            'endpoint': os.environ['AWS_RDS_ENDPOINT'],
-            'port': os.environ['AWS_RDS_PORT'],
-            'db': os.environ['AWS_RDS_DB'],
-            'user': os.environ['AWS_RDS_USER'],
-            'password': os.environ['AWS_RDS_PASSWORD'],
-            'elaboration_table': os.environ['AWS_RDS_ELABORATION_TABLE'],
-        },
-        's3': {
-            'bucket': os.environ['AWS_S3_BUCKET'],
-            'reports_folder': os.environ['AWS_S3_FOLDER_REPORT'],
-        },
-        'outputFile': os.environ['OUTPUT_FILE']
-    }
-
-if __name__ == '__main__':
-
-    try:
-
-        config = get_envs()
-
+    @staticmethod
+    def analyze(config):
         tr = TimestreamReader(
             access_key=config['aws_access_key'],
             secret_key=config['aws_secret_key'],
@@ -79,7 +49,7 @@ if __name__ == '__main__':
         location_density = []
 
         if data_ingested_today == 0:
-            falls = int(df["nFall"].sum().item())
+            falls = int(df["numberOfFalls"].sum().item())
             avg_serendipity = int(df['serendipity'].mean().item())
             grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])
             grouped_by_coords.apply(lambda x: location_density.append(json.loads(x.to_json())), axis=1)
@@ -109,7 +79,3 @@ if __name__ == '__main__':
 
 
         pg.delete_report()
-
-    except Exception as e:
-        print('Script analysis failed. Error:')
-        print(e)

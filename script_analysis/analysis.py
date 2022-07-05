@@ -48,7 +48,7 @@ class Analysis:
         avg_serendipity = 0
         location_density = []
 
-        if data_ingested_today == 0:
+        if data_ingested_today != 0:
             falls = int(df["numberOfFalls"].sum().item())
             avg_serendipity = int(df['serendipity'].mean().item())
             grouped_by_coords = df.groupby(['latitude', 'longitude']).size().reset_index(name='total').sort_values(by=['total'])

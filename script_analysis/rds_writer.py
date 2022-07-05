@@ -43,7 +43,7 @@ class RdsWriter:
 
         cursor.execute(
             f'''
-                insert into "{table}" (timestamp, data_ingested, falls, serendipity, location_density) 
+                insert into "{table}" (Date, DataIngested, Falls, Serendipity, LocationDensity) 
                 values (%s, %s, %s, %s, %s)
             ''',
             (

@@ -33,8 +33,8 @@ def lambda_handler(event, context):
     print('Started Analysis Lambda')
     try:
         print('Get Configuration')
-        print(config)
         config = get_envs()
+        print(config)
         print('Start Analyze')
         Analysis.analyze(config)
         print('Finish Analyzing')

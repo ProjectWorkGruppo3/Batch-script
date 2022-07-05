@@ -7,9 +7,9 @@ from analysis import Analysis
 def get_envs():
 
     return {
-        'aws_region':  os.environ['AWS_REGION'],
-        'aws_access_key': os.environ['AWS_ACCESS_KEY_ID'],
-        'aws_secret_key': os.environ['AWS_SECRET_ACCESS_KEY'],
+        'aws_region':  os.environ['REGION'],
+        'aws_access_key': os.environ['ACCESS_KEY_ID'],
+        'aws_secret_key': os.environ['SECRET_ACCESS_KEY'],
         'timestream': {
             'db': os.environ['AWS_TIMESTREAM_DB'],
             'table': os.environ['AWS_TIMESTREAM_TABLE'],
